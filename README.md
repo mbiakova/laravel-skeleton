@@ -83,8 +83,9 @@ curl http://127.0.0.1:8000/notifications/api/v1/notifications \
 ## What is in the skeleton
 
 ```
-config/distributable.php        declares the modules, and where they run when they run elsewhere
-config/microservices.php   how they call each other and where their events travel (laravel-microservices)
+config/distributable.php        declares the modules, and where they run when they run elsewhere;
+                                calls and events keep laravel-microservices' defaults, which each
+                                module completes in its own config/microservices.php
 apps/
 ├── Iam/              owns the users
 ├── Analytics/        records signups, computes datasets, keeps a copy of the users

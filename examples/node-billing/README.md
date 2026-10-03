@@ -22,6 +22,6 @@ npm start              # --once: stop after the first registration
 `MICROSERVICES_STREAM_KEY` is the key Redis holds, with the prefix of the modules' Redis connection
 (`laravel-database-` unless `REDIS_PREFIX` says otherwise).
 
-For a PHP module to handle `billing.account.opened`, declare `billing` in `config/microservices.php`
-under `services`, with its host, and list the handler under `events.listen`: a consumer skips an
+For a PHP module to handle `billing.account.opened`, declare `billing` in that module's
+`config/microservices.php` under `services`, with its host, and list the handler under `events.listen`: a consumer skips an
 envelope whose emitter is not a declared service.
