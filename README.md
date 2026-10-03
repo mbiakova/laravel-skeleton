@@ -1,20 +1,12 @@
 # Laravel Distributable skeleton
 
 A Laravel application set up with
-<<<<<<< HEAD
-[laravel-modulith](https://github.com/mbiakova/laravel-modulith). It comes with three example
-=======
-[laravel-distributable](https://github.com/mk-josias/laravel-distributable). It comes with three example
->>>>>>> origin/main
+[laravel-distributable](https://github.com/mbiakova/laravel-distributable). It comes with three example
 modules, `iam`, `analytics` and `notifications`, each with its own database. You can read them to see how a module
 is written, then replace them with your own.
 
 ```bash
-<<<<<<< HEAD
-composer create-project mbiakova/laravel-modulith-skeleton my-app
-=======
-composer create-project mk-josias/laravel-distributable-skeleton my-app
->>>>>>> origin/main
+composer create-project mbiakova/laravel-distributable-skeleton my-app
 ```
 
 Requires PHP 8.4+, and Redis for the event stream.

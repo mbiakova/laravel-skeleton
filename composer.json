@@ -1,10 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-<<<<<<< HEAD
-    "name": "mbiakova/laravel-modulith-skeleton",
-=======
-    "name": "mk-josias/laravel-distributable-skeleton",
->>>>>>> origin/main
+    "name": "mbiakova/laravel-distributable-skeleton",
     "type": "project",
     "description": "Application skeleton for laravel-distributable: a modular monolith deployable as one process or as per-module services.",
     "keywords": ["laravel", "modular-monolith", "distributable", "skeleton"],
