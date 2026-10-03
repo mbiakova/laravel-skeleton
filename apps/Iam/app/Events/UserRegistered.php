@@ -6,7 +6,7 @@ namespace Apps\Iam\Events;
 
 use Foundation\Iam\Events\IamEvent;
 use Foundation\Iam\Events\UserRegisteredPayload;
-use Modulith\Events\Event;
+use Microservices\Events\Event;
 
 final class UserRegistered extends Event
 {

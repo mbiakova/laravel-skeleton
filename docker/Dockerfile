@@ -6,11 +6,14 @@ ARG MODULITH_RUNS=*
 
 WORKDIR /app
 
-# The package, while it is required from a local path (see "repositories" in composer.json).
+# The packages, while they are required from a local path (see "repositories" in composer.json).
 COPY --from=modulith composer.json /modular-monolith/composer.json
 COPY --from=modulith src /modular-monolith/src
 COPY --from=modulith config /modular-monolith/config
-COPY --from=modulith database /modular-monolith/database
+COPY --from=microservices composer.json /laravel-microservices/composer.json
+COPY --from=microservices src /laravel-microservices/src
+COPY --from=microservices config /laravel-microservices/config
+COPY --from=microservices database /laravel-microservices/database
 
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs
@@ -53,6 +56,7 @@ ENV MODULITH_RUNS=${MODULITH_RUNS} \
 WORKDIR /app
 
 COPY --from=vendor /modular-monolith /modular-monolith
+COPY --from=vendor /laravel-microservices /laravel-microservices
 COPY --from=vendor /app /app
 
 RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \

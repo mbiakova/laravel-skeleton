@@ -125,6 +125,16 @@
                     "mk-josias/laravel-modulith": "0.1.0"
                 }
             }
+        },
+        "microservices": {
+            "type": "path",
+            "url": "../laravel-microservices",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "mk-josias/laravel-microservices": "0.1.0"
+                }
+            }
         }
     }
 }

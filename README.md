@@ -63,8 +63,8 @@ Both routes accept 6 requests a minute. A wrong password and an unknown email ge
 in its own terminal:
 
 ```bash
-php artisan modulith:events:consume --module=analytics
-php artisan modulith:events:consume --module=notifications
+php artisan microservices:events:consume --module=analytics
+php artisan microservices:events:consume --module=notifications
 ```
 
 `analytics` now has a signup and `notifications` a welcome message, and each keeps its own copy of
@@ -83,7 +83,8 @@ curl http://127.0.0.1:8000/notifications/api/v1/notifications \
 ## What is in the skeleton
 
 ```
-config/modulith.php   declares the modules, and where they run when they run elsewhere
+config/modulith.php        declares the modules, and where they run when they run elsewhere
+config/microservices.php   how they call each other and where their events travel (laravel-microservices)
 apps/
 ├── Iam/              owns the users
 ├── Analytics/        records signups, computes datasets, keeps a copy of the users
@@ -136,7 +137,7 @@ database whichever module calls it.
 | `app/Console/ComputeDatasets.php` | `analytics:compute` rebuilds `analytics_datasets`, one row per hour, from the signups. `AnalyticsServiceProvider` schedules it hourly. |
 | `app/Enums/DatasetMeasure.php`, `MeasureNature.php` | The measures, and how a period folds them: a flow (`signups_count`) adds up, a state (`users_total`) keeps the last value. |
 | `app/Enums/DatasetGroup.php`, `app/Queries/ReadDatasets.php` | `GET /analytics/api/v1/datasets?group=hour\|day\|week\|month\|none&measures[]=…&from=…&to=…` folds the hourly rows onto the group. |
-| `config/modulith.php` | Declares the handler. |
+| `config/microservices.php` | Declares the handler. |
 
 A reading never walks the signups: it filters and folds the pre-computed rows, so its cost
 depends on the period, not on the volume.
@@ -350,7 +351,7 @@ MODULITH_IAM_HOST=http://iam.internal:8000
 
 `config/modulith.php` declares every module in every process, so `analytics` still listens to
 iam's events and calls iam over HTTP through `IamRpcService`. Both processes must share `APP_KEY`,
-or the same `MODULITH_RPC_SECRET`.
+or the same `MICROSERVICES_RPC_SECRET`.
 
 When you build an image for one module, delete the folders of the others before
 `composer dump-autoload`:
@@ -389,7 +390,7 @@ keys. With `jwt`, give every container `AUTH_JWT_PUBLIC_KEY`, and iam `AUTH_JWT_
 |---|---|---|---|
 | `http` (Octane) | `WITH_HTTP` | `true` | as many as you need |
 | `worker` (`queue:work`) | `WITH_WORKER` | `false` | as many as you need |
-| `publisher` (`modulith:events:publish`) | `WITH_PUBLISHER` | `false` | one per module set: two would publish the outbox out of order |
+| `publisher` (`microservices:events:publish`) | `WITH_PUBLISHER` | `false` | one per module set: two would publish the outbox out of order |
 | `scheduler` (supercronic) | `WITH_SCHEDULER` | `false` | one per module set: two would run each task twice |
 | `consumer-<module>` | `WITH_CONSUMERS=iam,analytics,notifications` | none | one per module: two would break the order it reads in |
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7faacc260ca83abf7e1c5b4627930098",
+    "content-hash": "b2f0a316cf3320064df61b88bee89fb0",
     "packages": [
         {
             "name": "brick/math",
@@ -2337,15 +2337,97 @@
             "time": "2026-03-08T20:05:35+00:00"
         },
         {
+            "name": "mk-josias/laravel-microservices",
+            "version": "0.1.0",
+            "dist": {
+                "type": "path",
+                "url": "../laravel-microservices",
+                "reference": "5cbeb02f1419fc9df39382478033b4f1ef7772bb"
+            },
+            "require": {
+                "laravel/framework": "^12.0 || ^13.0",
+                "php": "^8.4"
+            },
+            "require-dev": {
+                "larastan/larastan": "^3.10",
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^10.0 || ^11.0",
+                "pestphp/pest": "^3.0 || ^4.0"
+            },
+            "suggest": {
+                "ext-redis": "Required by the redis events transport (predis/predis works too)"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Microservices\\Providers\\MicroservicesServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Microservices\\": "src/"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Microservices\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "pest"
+                ],
+                "lint": [
+                    "pint"
+                ],
+                "analyse": [
+                    "phpstan analyse --memory-limit=1G"
+                ],
+                "check": [
+                    "pint --test",
+                    "@analyse",
+                    "@test"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Josias Mekontso",
+                    "email": "josiasmekontso.it@gmail.com"
+                }
+            ],
+            "description": "Laravel apps as microservices: signed RPC through contracts, ordered events with an outbox, and read-only copies of another service's rows.",
+            "keywords": [
+                "events",
+                "laravel",
+                "microservices",
+                "outbox",
+                "redis-streams",
+                "rpc"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
+        },
+        {
             "name": "mk-josias/laravel-modulith",
             "version": "0.1.0",
             "dist": {
                 "type": "path",
                 "url": "../modular-monolith",
-                "reference": "95914eab0bc2a7059504093878a3db0fc3f0acfb"
+                "reference": "c91b0740d42bf670d4706ce7d0d6049c4e1e21cd"
             },
             "require": {
                 "laravel/framework": "^12.0 || ^13.0",
+                "mk-josias/laravel-microservices": "^0.1",
                 "php": "^8.4"
             },
             "require-dev": {
@@ -2356,7 +2438,6 @@
                 "pestphp/pest": "^3.0 || ^4.0"
             },
             "suggest": {
-                "ext-redis": "Required by the redis events transport (predis/predis works too)",
                 "laravel/octane": "High-throughput application server; the kernel also runs under plain FPM"
             },
             "type": "library",
@@ -2370,10 +2451,7 @@
             "autoload": {
                 "psr-4": {
                     "Modulith\\": "src/"
-                },
-                "files": [
-                    "src/helpers.php"
-                ]
+                }
             },
             "autoload-dev": {
                 "psr-4": {
@@ -2405,7 +2483,7 @@
                     "email": "josiasmekontso.it@gmail.com"
                 }
             ],
-            "description": "Modular monolith kernel for Laravel: self-describing modules with a database each, ordered events through a transactional outbox, and one codebase deployable as a single process or as per-module services.",
+            "description": "Laravel modules built as independently deployable microservices: each owns its data, and they talk through events and RPC. Run them as one app, or split them apart whenever you want.",
             "keywords": [
                 "events",
                 "laravel",

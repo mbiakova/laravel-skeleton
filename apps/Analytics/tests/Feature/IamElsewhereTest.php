@@ -7,7 +7,7 @@ use Foundation\Iam\Contracts\IamService;
 use Foundation\Iam\Services\IamRpcService;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
-use Modulith\Services\Rpc\RpcSignature;
+use Microservices\Services\Rpc\RpcSignature;
 use Tests\ModuleTestCase;
 
 /** Every read of iam is a signed HTTP call, under each token strategy. */

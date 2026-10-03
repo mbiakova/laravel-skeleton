@@ -7,7 +7,7 @@ namespace Apps\Notifications\Handlers;
 use Apps\Notifications\Enums\NotificationType;
 use Apps\Notifications\Models\Notification;
 use Foundation\Iam\Events\UserRegisteredPayload;
-use Modulith\Contracts\Stream\Handler;
+use Microservices\Contracts\Stream\Handler;
 
 final class SendWelcome implements Handler
 {

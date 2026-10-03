@@ -27,6 +27,7 @@ x-build: &build
   dockerfile: docker/Dockerfile
   additional_contexts:
     modulith: ../modular-monolith
+    microservices: ../laravel-microservices
 
 x-module: &module
   depends_on:

@@ -1,13 +1,13 @@
 // A billing service in Node: it opens an account for each user iam registers, asks iam the user's
-// name over RPC, and announces the account. Everything it speaks is in laravel-modulith's
+// name over RPC, and announces the account. Everything it speaks is in laravel-microservices'
 // docs/other-languages.md.
 import { createHmac, randomUUID } from 'node:crypto';
 import { createClient } from 'redis';
 
-const NAME = 'billing';                                                // its name in modulith.modules
-const STREAM = process.env.MODULITH_STREAM_KEY ?? 'modulith:events';
+const NAME = 'billing';                                                // its name in microservices.services
+const STREAM = process.env.MICROSERVICES_STREAM_KEY ?? 'microservices:events';
 const IAM = process.env.MODULITH_IAM_HOST ?? 'http://iam.svc:8000';
-const SECRET = process.env.MODULITH_RPC_SECRET;
+const SECRET = process.env.MICROSERVICES_RPC_SECRET;
 const ONCE = process.argv.includes('--once');                          // handle one event, then stop
 
 const redis = createClient({ url: process.env.REDIS_URL ?? 'redis://redis:6379' });
@@ -53,8 +53,8 @@ async function emit(name, payload) {
     await redis.xAdd(STREAM, '*', { envelope: JSON.stringify(envelope) });
 }
 
-async function rpc(module, method, contract, args) {
-    const path = `/${module}/rpc/${method}`;
+async function rpc(service, method, contract, args) {
+    const path = `/${service}/rpc/${method}`;
     const body = JSON.stringify({ contract, arguments: args });
     const timestamp = String(Math.floor(Date.now() / 1000));
     const nonce = randomUUID();
@@ -67,10 +67,10 @@ async function rpc(module, method, contract, args) {
         headers: {
             'Content-Type': 'application/json',
             Accept: 'application/json',
-            'X-Modulith-Timestamp': timestamp,
-            'X-Modulith-Nonce': nonce,
-            'X-Modulith-Context': context,
-            'X-Modulith-Signature': signature,
+            'X-Rpc-Timestamp': timestamp,
+            'X-Rpc-Nonce': nonce,
+            'X-Rpc-Context': context,
+            'X-Rpc-Signature': signature,
         },
     });
 

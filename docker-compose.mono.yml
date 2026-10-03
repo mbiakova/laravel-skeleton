@@ -28,6 +28,7 @@ services:
       dockerfile: docker/Dockerfile
       additional_contexts:
         modulith: ../modular-monolith
+        microservices: ../laravel-microservices
     image: modulith-skeleton:mono
     environment:
       <<: *env
