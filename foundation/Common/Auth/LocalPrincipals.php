@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Foundation\Common\Auth;
 
-use Modulith\Services\Modules\ModuleContext;
+use Distributable\Services\Modules\ModuleContext;
 
 /** Loads the user from the database of the running module, through the model auth.principals names for it. */
 final readonly class LocalPrincipals implements PrincipalResolver

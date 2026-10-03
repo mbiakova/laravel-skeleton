@@ -2,14 +2,14 @@
 FROM composer:2 AS vendor
 
 # '*' keeps every module; a list (e.g. "analytics") builds an image for those modules only.
-ARG MODULITH_RUNS=*
+ARG RUN_MODULES=*
 
 WORKDIR /app
 
 # The packages, while they are required from a local path (see "repositories" in composer.json).
-COPY --from=modulith composer.json /modular-monolith/composer.json
-COPY --from=modulith src /modular-monolith/src
-COPY --from=modulith config /modular-monolith/config
+COPY --from=distributable composer.json /modular-monolith/composer.json
+COPY --from=distributable src /modular-monolith/src
+COPY --from=distributable config /modular-monolith/config
 COPY --from=microservices composer.json /laravel-microservices/composer.json
 COPY --from=microservices src /laravel-microservices/src
 COPY --from=microservices config /laravel-microservices/config
@@ -21,8 +21,8 @@ RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignor
 COPY . .
 # The packages only the purged modules required (their own composer.json) are removed; naming them keeps every other version as locked.
 RUN composer dump-autoload --no-dev \
-    && UNUSED="$(MODULITH_RUNS="$MODULITH_RUNS" php artisan modulith:unused-packages)" \
-    && MODULITH_RUNS="$MODULITH_RUNS" php artisan modulith:purge --force \
+    && UNUSED="$(RUN_MODULES="$RUN_MODULES" php artisan distributable:unused-packages)" \
+    && RUN_MODULES="$RUN_MODULES" php artisan distributable:purge --force \
     && if [ -n "$UNUSED" ]; then \
         composer update $UNUSED --no-dev --no-scripts --no-autoloader --ignore-platform-reqs \
         && rm -f bootstrap/cache/packages.php bootstrap/cache/services.php; \
@@ -44,8 +44,8 @@ ARG TARGETARCH
 RUN curl -fsSL "https://github.com/aptible/supercronic/releases/download/${SUPERCRONIC_VERSION}/supercronic-linux-${TARGETARCH}" \
     -o /usr/local/bin/supercronic && chmod +x /usr/local/bin/supercronic
 
-ARG MODULITH_RUNS=*
-ENV MODULITH_RUNS=${MODULITH_RUNS} \
+ARG RUN_MODULES=*
+ENV RUN_MODULES=${RUN_MODULES} \
     OCTANE_SERVER=swoole \
     WITH_HTTP=true \
     WITH_WORKER=false \
@@ -62,7 +62,7 @@ COPY --from=vendor /app /app
 RUN mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-COPY docker/php.ini /usr/local/etc/php/conf.d/zz-modulith.ini
+COPY docker/php.ini /usr/local/etc/php/conf.d/zz-distributable.ini
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 

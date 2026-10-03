@@ -6,7 +6,7 @@ import { createClient } from 'redis';
 
 const NAME = 'billing';                                                // its name in microservices.services
 const STREAM = process.env.MICROSERVICES_STREAM_KEY ?? 'microservices:events';
-const IAM = process.env.MODULITH_IAM_HOST ?? 'http://iam.svc:8000';
+const IAM = process.env.IAM_HOST ?? 'http://iam.svc:8000';
 const SECRET = process.env.MICROSERVICES_RPC_SECRET;
 const ONCE = process.argv.includes('--once');                          // handle one event, then stop
 

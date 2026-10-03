@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Apps\Analytics\Providers;
 
+use Distributable\Providers\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
-use Modulith\Providers\ModuleServiceProvider;
 
 final class AnalyticsServiceProvider extends ModuleServiceProvider
 {

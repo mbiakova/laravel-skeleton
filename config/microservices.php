@@ -8,7 +8,7 @@ return [
     |--------------------------------------------------------------------------
     | Services
     |--------------------------------------------------------------------------
-    | Every module of config/modulith.php is a service, with its host: nothing
+    | Every module of config/distributable.php is a service, with its host: nothing
     | to repeat here. Declare only a service that is not a module, such as one
     | written in another language: ['host' => …].
     */

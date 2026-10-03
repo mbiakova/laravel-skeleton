@@ -9,11 +9,11 @@ x-env: &env
   LOG_CHANNEL: stderr
   DB_CONNECTION: pgsql
   DB_HOST: postgres
-  DB_DATABASE: modulith
-  DB_USERNAME: modulith
-  DB_PASSWORD: modulith
-  DB_APP_USERNAME: modulith_app
-  DB_APP_PASSWORD: modulith_app
+  DB_DATABASE: distributable
+  DB_USERNAME: distributable
+  DB_PASSWORD: distributable
+  DB_APP_USERNAME: distributable_app
+  DB_APP_PASSWORD: distributable_app
   REDIS_HOST: redis
   CACHE_STORE: redis
   SESSION_DRIVER: array
@@ -27,12 +27,12 @@ services:
       context: .
       dockerfile: docker/Dockerfile
       additional_contexts:
-        modulith: ../modular-monolith
+        distributable: ../modular-monolith
         microservices: ../laravel-microservices
-    image: modulith-skeleton:mono
+    image: distributable-skeleton:mono
     environment:
       <<: *env
-      MODULITH_RUNS: "*"
+      RUN_MODULES: "*"
       WITH_CONSUMERS: "iam,analytics,notifications"
       WITH_SCHEDULER: "true"
       SYNC_PERMISSIONS: "true"
@@ -52,17 +52,17 @@ services:
 
   postgres:
     build: ./docker/postgres
-    image: modulith-postgres:local
+    image: distributable-postgres:local
     environment:
-      POSTGRES_DB: modulith
-      POSTGRES_USER: modulith
-      POSTGRES_PASSWORD: modulith
-      DB_APP_PASSWORD: modulith_app
+      POSTGRES_DB: distributable
+      POSTGRES_USER: distributable
+      POSTGRES_PASSWORD: distributable
+      DB_APP_PASSWORD: distributable_app
       MODULE_DATABASES: "iam analytics notifications"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "modulith"]
+      test: ["CMD", "pg_isready", "-U", "distributable"]
       interval: 5s
       timeout: 5s
       retries: 5

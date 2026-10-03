@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Foundation\Common\Exceptions;
 
+use Distributable\Traits\ResolvesModule;
 use Foundation\Common\Contracts\RendersApiEnvelope;
-use Modulith\Traits\ResolvesModule;
 use RuntimeException;
 use Throwable;
 

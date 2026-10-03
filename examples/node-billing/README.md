@@ -14,7 +14,7 @@ user iam registers, it asks iam the user's name over RPC, opens an account and a
 npm install
 REDIS_URL=redis://127.0.0.1:6379 \
 MICROSERVICES_STREAM_KEY=laravel-database-microservices:events \
-MODULITH_IAM_HOST=http://127.0.0.1:8000 \
+IAM_HOST=http://127.0.0.1:8000 \
 MICROSERVICES_RPC_SECRET=<the modules' MICROSERVICES_RPC_SECRET or APP_KEY> \
 npm start              # --once: stop after the first registration
 ```
