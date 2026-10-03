@@ -1,12 +1,20 @@
-# Laravel Modulith skeleton
+# Laravel Distributable skeleton
 
 A Laravel application set up with
+<<<<<<< HEAD
 [laravel-modulith](https://github.com/mbiakova/laravel-modulith). It comes with three example
+=======
+[laravel-distributable](https://github.com/mk-josias/laravel-distributable). It comes with three example
+>>>>>>> origin/main
 modules, `iam`, `analytics` and `notifications`, each with its own database. You can read them to see how a module
 is written, then replace them with your own.
 
 ```bash
+<<<<<<< HEAD
 composer create-project mbiakova/laravel-modulith-skeleton my-app
+=======
+composer create-project mk-josias/laravel-distributable-skeleton my-app
+>>>>>>> origin/main
 ```
 
 Requires PHP 8.4+, and Redis for the event stream.
@@ -63,8 +71,8 @@ Both routes accept 6 requests a minute. A wrong password and an unknown email ge
 in its own terminal:
 
 ```bash
-php artisan modulith:events:consume --module=analytics
-php artisan modulith:events:consume --module=notifications
+php artisan microservices:events:consume --module=analytics
+php artisan microservices:events:consume --module=notifications
 ```
 
 `analytics` now has a signup and `notifications` a welcome message, and each keeps its own copy of
@@ -83,7 +91,8 @@ curl http://127.0.0.1:8000/notifications/api/v1/notifications \
 ## What is in the skeleton
 
 ```
-config/modulith.php   declares the modules, and where they run when they run elsewhere
+config/distributable.php        declares the modules, and where they run when they run elsewhere
+config/microservices.php   how they call each other and where their events travel (laravel-microservices)
 apps/
 ├── Iam/              owns the users
 ├── Analytics/        records signups, computes datasets, keeps a copy of the users
@@ -136,7 +145,7 @@ database whichever module calls it.
 | `app/Console/ComputeDatasets.php` | `analytics:compute` rebuilds `analytics_datasets`, one row per hour, from the signups. `AnalyticsServiceProvider` schedules it hourly. |
 | `app/Enums/DatasetMeasure.php`, `MeasureNature.php` | The measures, and how a period folds them: a flow (`signups_count`) adds up, a state (`users_total`) keeps the last value. |
 | `app/Enums/DatasetGroup.php`, `app/Queries/ReadDatasets.php` | `GET /analytics/api/v1/datasets?group=hour\|day\|week\|month\|none&measures[]=…&from=…&to=…` folds the hourly rows onto the group. |
-| `config/modulith.php` | Declares the handler. |
+| `config/microservices.php` | Declares the handler. |
 
 A reading never walks the signups: it filters and folds the pre-computed rows, so its cost
 depends on the period, not on the volume.
@@ -341,25 +350,25 @@ of the same code with different settings:
 
 ```dotenv
 # the iam process
-MODULITH_RUNS=iam
+RUN_MODULES=iam
 
 # the analytics process
-MODULITH_RUNS=analytics
-MODULITH_IAM_HOST=http://iam.internal:8000
+RUN_MODULES=analytics
+IAM_HOST=http://iam.internal:8000
 ```
 
-`config/modulith.php` declares every module in every process, so `analytics` still listens to
+`config/distributable.php` declares every module in every process, so `analytics` still listens to
 iam's events and calls iam over HTTP through `IamRpcService`. Both processes must share `APP_KEY`,
-or the same `MODULITH_RPC_SECRET`.
+or the same `MICROSERVICES_RPC_SECRET`.
 
 When you build an image for one module, delete the folders of the others before
 `composer dump-autoload`:
 
 ```bash
-MODULITH_RUNS=analytics php artisan modulith:purge --force
+RUN_MODULES=analytics php artisan distributable:purge --force
 ```
 
-Starting that image with `MODULITH_RUNS=iam` then fails at boot, because iam's folder is gone.
+Starting that image with `RUN_MODULES=iam` then fails at boot, because iam's folder is gone.
 
 ## Docker
 
@@ -372,8 +381,8 @@ docker compose up -d                              # one container per module: ia
 ```
 
 `APP_PORT`, `IAM_PORT`, `ANALYTICS_PORT` and `NOTIFICATIONS_PORT` change the published ports. In the second setup, each
-image is built with `--build-arg MODULITH_RUNS=<module>`, so it holds only its module: the
-Dockerfile runs `modulith:purge` before `composer dump-autoload`. Each container also gets its own
+image is built with `--build-arg RUN_MODULES=<module>`, so it holds only its module: the
+Dockerfile runs `distributable:purge` before `composer dump-autoload`. Each container also gets its own
 application database (`app_iam`, `app_analytics`, `app_notifications`), so two containers never
 migrate the same one. Both compose files validate tokens with the `rpc` strategy: they ship no JWT
 keys. With `jwt`, give every container `AUTH_JWT_PUBLIC_KEY`, and iam `AUTH_JWT_PRIVATE_KEY`.
@@ -383,13 +392,13 @@ keys. With `jwt`, give every container `AUTH_JWT_PUBLIC_KEY`, and iam `AUTH_JWT_
 | `docker/Dockerfile` | Installs the dependencies, purges the modules the image doesn't run and the packages only they required, then builds the PHP and Swoole runtime. |
 | `docker/entrypoint.sh` | Runs `optimize`, migrates (on the `http` role only), writes one consumer per module of `WITH_CONSUMERS`, then starts supervisord. |
 | `docker/supervisord.conf` | The roles a container can take, each switched on by a variable. |
-| `docker/postgres/` | A Postgres image that creates the databases of `MODULE_DATABASES`, owned by `modulith`, written by `modulith_app`. |
+| `docker/postgres/` | A Postgres image that creates the databases of `MODULE_DATABASES`, owned by `distributable`, written by `distributable_app`. |
 
 | Role | Variable | Default | Run at most |
 |---|---|---|---|
 | `http` (Octane) | `WITH_HTTP` | `true` | as many as you need |
 | `worker` (`queue:work`) | `WITH_WORKER` | `false` | as many as you need |
-| `publisher` (`modulith:events:publish`) | `WITH_PUBLISHER` | `false` | one per module set: two would publish the outbox out of order |
+| `publisher` (`microservices:events:publish`) | `WITH_PUBLISHER` | `false` | one per module set: two would publish the outbox out of order |
 | `scheduler` (supercronic) | `WITH_SCHEDULER` | `false` | one per module set: two would run each task twice |
 | `consumer-<module>` | `WITH_CONSUMERS=iam,analytics,notifications` | none | one per module: two would break the order it reads in |
 
@@ -406,7 +415,7 @@ test.
 
 A module is tested alone, the way it runs once it has its own process. Its tests live in
 `apps/{Module}/tests/` and extend `Tests\ModuleTestCase`, which runs that module only
-(`MODULITH_RUNS`) and stands in for iam:
+(`RUN_MODULES`) and stands in for iam:
 
 ```php
 class InboxTest extends ModuleTestCase
@@ -434,7 +443,7 @@ Because a module's tests name no other module's class, `Boundaries` holds for th
 |---|---|
 | `apps/{Module}/tests/` | the module alone; `phpunit.xml` lists them in the `Modules` suite |
 | `tests/Feature/ModulesTest.php` | the one flow that crosses modules, every module in one process: registration, then what analytics makes of it |
-| `tests/Feature/ArchitectureTest.php` | no module uses another module's classes (`Modulith\Testing\Boundaries`), and `modulith:doctor` passes |
+| `tests/Feature/ArchitectureTest.php` | no module uses another module's classes (`Distributable\Testing\Boundaries`), and `distributable:doctor` passes |
 
 `php artisan make:test InvoiceTest --module=billing` writes a test in the module.
 
@@ -452,7 +461,7 @@ $user = $this->inModuleOf(User::class, fn () => User::query()->create([...]));
 Laravel's `make:*` commands take `--module`:
 
 ```bash
-php artisan modulith:make-module billing --database          # a new module, declared in config/modulith.php and composer.json
+php artisan distributable:make-module billing --database          # a new module, declared in config/distributable.php and composer.json
 php artisan make:model Invoice -mf --module=billing          # apps/Billing/app/Models, its migration and its factory
 php artisan make:controller InvoiceController --module=billing
 ```

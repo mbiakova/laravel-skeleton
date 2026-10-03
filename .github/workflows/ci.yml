@@ -9,15 +9,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # composer.json reaches the package through a path repository at ../modular-monolith.
+      # composer.json reaches the packages through path repositories at ../modular-monolith and ../laravel-microservices.
       - uses: actions/checkout@v4
         with:
           path: skeleton
 
       - uses: actions/checkout@v4
         with:
-          repository: mk-josias/laravel-modulith
+          repository: mk-josias/laravel-distributable
           path: modular-monolith
+
+      - uses: actions/checkout@v4
+        with:
+          repository: mk-josias/laravel-microservices
+          path: laravel-microservices
 
       - uses: shivammathur/setup-php@v2
         with:

@@ -8,7 +8,7 @@ use Apps\Iam\Events\UserRegistered;
 use Apps\Iam\Models\User;
 use Foundation\Iam\Events\UserRegisteredPayload;
 use Illuminate\Support\Facades\DB;
-use Modulith\Contracts\Stream\Bus;
+use Microservices\Contracts\Stream\Bus;
 
 final readonly class RegisterUser
 {

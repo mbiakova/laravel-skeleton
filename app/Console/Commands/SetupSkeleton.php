@@ -40,7 +40,7 @@ final class SetupSkeleton extends Command
 
     public function handle(): int
     {
-        $present = array_values(array_filter(array_keys(self::REMOVABLE), fn (string $module): bool => array_key_exists($module, (array) config('modulith.modules'))));
+        $present = array_values(array_filter(array_keys(self::REMOVABLE), fn (string $module): bool => array_key_exists($module, (array) config('distributable.modules'))));
 
         /** @var list<string> $remove */
         $remove = $this->option('remove') !== [] ? (array) $this->option('remove') : ($present === [] ? [] : array_values(array_diff($present, multiselect(
@@ -88,7 +88,7 @@ final class SetupSkeleton extends Command
 
     private function remove(string $module): void
     {
-        $this->call('modulith:delete-module', ['name' => $module, '--force' => true]);
+        $this->call('distributable:delete-module', ['name' => $module, '--force' => true]);
 
         foreach (self::REMOVABLE[$module]['tests'] as $test) {
             @unlink(base_path("tests/Feature/{$test}.php"));

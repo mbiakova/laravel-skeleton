@@ -8,8 +8,8 @@ use Foundation\Common\Auth\IsPrincipal;
 use Foundation\Common\Auth\Principal;
 use Foundation\Common\Database\Searchable;
 use Illuminate\Database\Eloquent\Model;
-use Modulith\Contracts\Shadows\Shadowed;
-use Modulith\Traits\ShadowSource;
+use Microservices\Contracts\Shadows\Shadowed;
+use Microservices\Traits\ShadowSource;
 use Spatie\Permission\Traits\HasRoles;
 
 /**

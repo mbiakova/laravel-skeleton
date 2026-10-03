@@ -6,7 +6,7 @@ namespace Foundation\Iam\Shadows;
 
 use Foundation\Common\Auth\IsPrincipal;
 use Foundation\Common\Auth\Principal;
-use Modulith\Models\ShadowModel;
+use Microservices\Models\ShadowModel;
 
 /**
  * @property int $id

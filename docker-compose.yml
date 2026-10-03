@@ -1,4 +1,4 @@
-# One container per module, each from an image that holds only its module (modulith:purge).
+# One container per module, each from an image that holds only its module (distributable:purge).
 # analytics reaches iam over HTTP at iam.svc; both share APP_KEY, which signs those calls.
 # Development values only: in production, set real secrets.
 
@@ -9,24 +9,25 @@ x-env: &env
   LOG_CHANNEL: stderr
   DB_CONNECTION: pgsql
   DB_HOST: postgres
-  DB_DATABASE: modulith
-  DB_USERNAME: modulith
-  DB_PASSWORD: modulith
-  DB_APP_USERNAME: modulith_app
-  DB_APP_PASSWORD: modulith_app
+  DB_DATABASE: distributable
+  DB_USERNAME: distributable
+  DB_PASSWORD: distributable
+  DB_APP_USERNAME: distributable_app
+  DB_APP_PASSWORD: distributable_app
   REDIS_HOST: redis
   CACHE_STORE: redis
   SESSION_DRIVER: array
   QUEUE_CONNECTION: redis
   AUTH_TOKEN_VALIDATION_STRATEGY: rpc   # jwt needs AUTH_JWT_PUBLIC_KEY / AUTH_JWT_PRIVATE_KEY
-  MODULITH_IAM_HOST: "http://iam.svc:8000"
+  IAM_HOST: "http://iam.svc:8000"
   OCTANE_WORKERS: "2"
 
 x-build: &build
   context: .
   dockerfile: docker/Dockerfile
   additional_contexts:
-    modulith: ../modular-monolith
+    distributable: ../modular-monolith
+    microservices: ../laravel-microservices
 
 x-module: &module
   depends_on:
@@ -48,11 +49,11 @@ services:
     build:
       <<: *build
       args:
-        MODULITH_RUNS: iam
-    image: modulith-skeleton:iam
+        RUN_MODULES: iam
+    image: distributable-skeleton:iam
     environment:
       <<: *env
-      MODULITH_RUNS: iam
+      RUN_MODULES: iam
       WITH_CONSUMERS: iam
       SYNC_PERMISSIONS: "true"
       DB_DATABASE: app_iam   # each service has its own application database, migrated by it alone
@@ -67,11 +68,11 @@ services:
     build:
       <<: *build
       args:
-        MODULITH_RUNS: analytics
-    image: modulith-skeleton:analytics
+        RUN_MODULES: analytics
+    image: distributable-skeleton:analytics
     environment:
       <<: *env
-      MODULITH_RUNS: analytics
+      RUN_MODULES: analytics
       WITH_CONSUMERS: analytics
       WITH_SCHEDULER: "true"   # analytics:compute, hourly
       DB_DATABASE: app_analytics
@@ -83,11 +84,11 @@ services:
     build:
       <<: *build
       args:
-        MODULITH_RUNS: notifications
-    image: modulith-skeleton:notifications
+        RUN_MODULES: notifications
+    image: distributable-skeleton:notifications
     environment:
       <<: *env
-      MODULITH_RUNS: notifications
+      RUN_MODULES: notifications
       WITH_CONSUMERS: notifications
       DB_DATABASE: app_notifications
     ports:
@@ -95,17 +96,17 @@ services:
 
   postgres:
     build: ./docker/postgres
-    image: modulith-postgres:local
+    image: distributable-postgres:local
     environment:
-      POSTGRES_DB: modulith
-      POSTGRES_USER: modulith
-      POSTGRES_PASSWORD: modulith
-      DB_APP_PASSWORD: modulith_app
+      POSTGRES_DB: distributable
+      POSTGRES_USER: distributable
+      POSTGRES_PASSWORD: distributable
+      DB_APP_PASSWORD: distributable_app
       MODULE_DATABASES: "iam analytics notifications app_iam app_analytics app_notifications"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "modulith"]
+      test: ["CMD", "pg_isready", "-U", "distributable"]
       interval: 5s
       timeout: 5s
       retries: 5

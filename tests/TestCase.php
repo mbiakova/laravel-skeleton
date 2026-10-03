@@ -2,10 +2,10 @@
 
 namespace Tests;
 
+use Distributable\Services\Modules\ModuleRegistry;
+use Distributable\Testing\InteractsWithModules;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\DB;
-use Modulith\Services\Modules\ModuleRegistry;
-use Modulith\Testing\InteractsWithModules;
 
 abstract class TestCase extends BaseTestCase
 {

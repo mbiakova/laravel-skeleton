@@ -22,7 +22,7 @@ $connection = static fn (string $username, string $password): array => env('DB_C
 
 return [
     'connections' => [
-        'notifications' => $connection((string) env('DB_APP_USERNAME', 'modulith_app'), (string) env('DB_APP_PASSWORD', '')),
-        'notifications_owner' => $connection((string) env('DB_USERNAME', 'modulith'), (string) env('DB_PASSWORD', '')),
+        'notifications' => $connection((string) env('DB_APP_USERNAME', 'distributable_app'), (string) env('DB_APP_PASSWORD', '')),
+        'notifications_owner' => $connection((string) env('DB_USERNAME', 'distributable'), (string) env('DB_PASSWORD', '')),
     ],
 ];

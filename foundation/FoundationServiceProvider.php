@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Foundation;
 
+use Distributable\Providers\FoundationServiceProvider as BaseServiceProvider;
 use Foundation\Common\Auth\PermissionSource;
 use Foundation\Common\Auth\PrincipalResolver;
 use Foundation\Common\Auth\TokenValidator;
@@ -15,7 +16,6 @@ use Foundation\Iam\Events\UserRegisteredPayload;
 use Foundation\Iam\Services\IamRpcService;
 use Illuminate\Contracts\Foundation\Application;
 use InvalidArgumentException;
-use Modulith\Providers\FoundationServiceProvider as BaseServiceProvider;
 
 final class FoundationServiceProvider extends BaseServiceProvider
 {
