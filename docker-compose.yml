@@ -21,6 +21,13 @@ x-env: &env
   AUTH_TOKEN_VALIDATION_STRATEGY: rpc   # jwt needs AUTH_JWT_PUBLIC_KEY / AUTH_JWT_PRIVATE_KEY
   IAM_HOST: "http://iam.svc:8000"
   OCTANE_WORKERS: "2"
+  BROADCAST_CONNECTION: reverb
+  REVERB_APP_ID: distributable
+  REVERB_APP_KEY: distributable-key
+  REVERB_APP_SECRET: distributable-secret
+  REVERB_HOST: localhost   # the Reverb of the container that pushes
+  REVERB_PORT: "8080"
+  REVERB_SCHEME: http
 
 x-build: &build
   context: .
@@ -90,9 +97,12 @@ services:
       <<: *env
       RUN_MODULES: notifications
       WITH_CONSUMERS: notifications
+      WITH_WORKER: "true"    # the mails, queued
+      WITH_REVERB: "true"    # the live push, ws://localhost:8080
       DB_DATABASE: app_notifications
     ports:
       - "${NOTIFICATIONS_PORT:-8003}:8000"
+      - "${REVERB_PUBLIC_PORT:-8080}:8080"
 
   postgres:
     build: ./docker/postgres

@@ -32,8 +32,8 @@ EOF
 done
 
 # supervisord aborts on any %(ENV_…)s it can't resolve: every switch it reads gets a value here.
-: "${WITH_HTTP:=true}" "${WITH_WORKER:=false}" "${WITH_PUBLISHER:=false}" "${WITH_SCHEDULER:=false}"
+: "${WITH_HTTP:=true}" "${WITH_WORKER:=false}" "${WITH_PUBLISHER:=false}" "${WITH_SCHEDULER:=false}" "${WITH_REVERB:=false}"
 : "${OCTANE_WORKERS:=auto}"
-export WITH_HTTP WITH_WORKER WITH_PUBLISHER WITH_SCHEDULER OCTANE_WORKERS
+export WITH_HTTP WITH_WORKER WITH_PUBLISHER WITH_SCHEDULER WITH_REVERB OCTANE_WORKERS
 
 exec supervisord -c /app/docker/supervisord.conf
