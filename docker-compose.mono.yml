@@ -9,7 +9,6 @@ x-env: &env
   LOG_CHANNEL: stderr
   DB_CONNECTION: pgsql
   DB_HOST: postgres
-  DB_DATABASE: distributable
   DB_USERNAME: distributable
   DB_PASSWORD: distributable
   DB_APP_USERNAME: distributable_app

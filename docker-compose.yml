@@ -9,7 +9,6 @@ x-env: &env
   LOG_CHANNEL: stderr
   DB_CONNECTION: pgsql
   DB_HOST: postgres
-  DB_DATABASE: distributable
   DB_USERNAME: distributable
   DB_PASSWORD: distributable
   DB_APP_USERNAME: distributable_app
@@ -63,7 +62,6 @@ services:
       RUN_MODULES: iam
       WITH_CONSUMERS: iam
       SYNC_PERMISSIONS: "true"
-      DB_DATABASE: app_iam   # each service has its own application database, migrated by it alone
     ports:
       - "${IAM_PORT:-8001}:8000"
     networks:
@@ -82,7 +80,6 @@ services:
       RUN_MODULES: analytics
       WITH_CONSUMERS: analytics
       WITH_SCHEDULER: "true"   # analytics:compute, hourly
-      DB_DATABASE: app_analytics
     ports:
       - "${ANALYTICS_PORT:-8002}:8000"
 
@@ -99,7 +96,6 @@ services:
       WITH_CONSUMERS: notifications
       WITH_WORKER: "true"    # the mails, queued
       WITH_REVERB: "true"    # the live push, ws://localhost:8080
-      DB_DATABASE: app_notifications
     ports:
       - "${NOTIFICATIONS_PORT:-8003}:8000"
       - "${REVERB_PUBLIC_PORT:-8080}:8080"
@@ -112,7 +108,7 @@ services:
       POSTGRES_USER: distributable
       POSTGRES_PASSWORD: distributable
       DB_APP_PASSWORD: distributable_app
-      MODULE_DATABASES: "iam analytics notifications app_iam app_analytics app_notifications"
+      MODULE_DATABASES: "iam analytics notifications"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:

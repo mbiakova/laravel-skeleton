@@ -28,7 +28,7 @@ yours.
 cp .env.example .env
 php artisan key:generate
 php artisan auth:jwt-keys     # the RSA pair iam signs tokens with, in storage/jwt-*.key
-php artisan migrate           # migrates the application's database, then each module's
+php artisan migrate           # migrates each module's database
 php artisan iam:sync-permissions --prune   # the permissions listed in auth.permissions, see Permissions
 php artisan serve
 ```
@@ -385,9 +385,8 @@ docker compose up -d                              # one container per module: ia
 
 `APP_PORT`, `IAM_PORT`, `ANALYTICS_PORT` and `NOTIFICATIONS_PORT` change the published ports. In the second setup, each
 image is built with `--build-arg RUN_MODULES=<module>`, so it holds only its module: the
-Dockerfile runs `distributable:purge` before `composer dump-autoload`. Each container also gets its own
-application database (`app_iam`, `app_analytics`, `app_notifications`), so two containers never
-migrate the same one. Both compose files validate tokens with the `rpc` strategy: they ship no JWT
+Dockerfile runs `distributable:purge` before `composer dump-autoload`. A container migrates only
+the database of the module it runs, so two containers never migrate the same one. Both compose files validate tokens with the `rpc` strategy: they ship no JWT
 keys. With `jwt`, give every container `AUTH_JWT_PUBLIC_KEY`, and iam `AUTH_JWT_PRIVATE_KEY`.
 
 | File | What it does |
