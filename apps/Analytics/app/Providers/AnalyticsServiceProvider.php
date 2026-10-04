@@ -9,11 +9,8 @@ use Illuminate\Console\Scheduling\Schedule;
 
 final class AnalyticsServiceProvider extends ModuleServiceProvider
 {
-    public function boot(): void
+    protected function schedule(Schedule $schedule): void
     {
-        parent::boot();
-
-        // Scheduled by the module itself, so only a process that runs analytics schedules it.
-        $this->callAfterResolving(Schedule::class, fn (Schedule $schedule) => $schedule->command('analytics:compute')->hourly());
+        $schedule->command('analytics:compute')->hourly();
     }
 }
