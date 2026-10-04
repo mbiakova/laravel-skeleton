@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Apps\Analytics\Models;
 
-use Distributable\Traits\OnModuleConnection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
@@ -17,8 +16,6 @@ use Illuminate\Support\Carbon;
  */
 final class Dataset extends Model
 {
-    use OnModuleConnection;
-
     protected $table = 'analytics_datasets';
 
     public $timestamps = false;

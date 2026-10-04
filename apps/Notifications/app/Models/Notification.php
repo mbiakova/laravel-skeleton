@@ -6,7 +6,6 @@ namespace Apps\Notifications\Models;
 
 use Apps\Notifications\Enums\NotificationType;
 use Apps\Notifications\Observers\NotificationObserver;
-use Distributable\Traits\OnModuleConnection;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -27,8 +26,6 @@ use Illuminate\Support\Carbon;
 #[ObservedBy(NotificationObserver::class)]
 final class Notification extends Model
 {
-    use OnModuleConnection;
-
     protected $table = 'notifications_inbox';
 
     protected $fillable = ['recipient_user_id', 'type', 'payload'];
