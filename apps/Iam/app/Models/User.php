@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Apps\Iam\Models;
 
+use Distributable\Traits\OnModuleConnection;
 use Foundation\Common\Auth\IsPrincipal;
 use Foundation\Common\Auth\Principal;
 use Foundation\Common\Database\Searchable;
@@ -23,6 +24,7 @@ final class User extends Model implements Principal, Shadowed
 {
     use HasRoles;
     use IsPrincipal;
+    use OnModuleConnection;
     use Searchable;
     use ShadowSource;
 

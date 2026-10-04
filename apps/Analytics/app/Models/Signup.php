@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Apps\Analytics\Models;
 
+use Distributable\Traits\OnModuleConnection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -15,6 +16,8 @@ use Illuminate\Support\Carbon;
  */
 final class Signup extends Model
 {
+    use OnModuleConnection;
+
     protected $table = 'analytics_signups';
 
     protected $fillable = ['user_id'];
