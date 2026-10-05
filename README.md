@@ -84,8 +84,8 @@ curl http://127.0.0.1:8000/notifications/api/v1/notifications \
 
 ```
 config/distributable.php        declares the modules, and where they run when they run elsewhere;
-                                calls and events keep laravel-microservices' defaults, which each
-                                module completes in its own config/microservices.php
+                                calls and events keep laravel-microservices' defaults; each module
+                                declares its handlers in $handlers of its service provider
 apps/
 ├── Iam/              owns the users
 ├── Analytics/        records signups, computes datasets, keeps a copy of the users
@@ -138,7 +138,7 @@ database whichever module calls it.
 | `app/Console/ComputeDatasets.php` | `analytics:compute` rebuilds `analytics_datasets`, one row per hour, from the signups. `AnalyticsServiceProvider` schedules it hourly. |
 | `app/Enums/DatasetMeasure.php`, `MeasureNature.php` | The measures, and how a period folds them: a flow (`signups_count`) adds up, a state (`users_total`) keeps the last value. |
 | `app/Enums/DatasetGroup.php`, `app/Queries/ReadDatasets.php` | `GET /analytics/api/v1/datasets?group=hour\|day\|week\|month\|none&measures[]=…&from=…&to=…` folds the hourly rows onto the group. |
-| `config/microservices.php` | Declares the handler. |
+| `app/Providers/AnalyticsServiceProvider.php` | Declares the handler in `$handlers` and schedules `analytics:compute`. |
 
 A reading never walks the signups: it filters and folds the pre-computed rows, so its cost
 depends on the period, not on the volume.

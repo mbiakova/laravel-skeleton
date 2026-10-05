@@ -23,5 +23,5 @@ npm start              # --once: stop after the first registration
 (`laravel-database-` unless `REDIS_PREFIX` says otherwise).
 
 For a PHP module to handle `billing.account.opened`, declare `billing` in that module's
-`config/microservices.php` under `services`, with its host, and list the handler under `events.listen`: a consumer skips an
+`config/microservices.php` under `services`, with its host, and list the handler in `$handlers` of its service provider: a consumer skips an
 envelope whose emitter is not a declared service.
