@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace Apps\Analytics\Providers;
 
-use Distributable\Providers\ModuleServiceProvider;
+use Apps\Analytics\Handlers\RecordSignup;
+use Distributable\Providers\ServiceProvider;
+use Foundation\Iam\Events\IamEvent;
 use Illuminate\Console\Scheduling\Schedule;
 
-final class AnalyticsServiceProvider extends ModuleServiceProvider
+final class AnalyticsServiceProvider extends ServiceProvider
 {
-    public function boot(): void
-    {
-        parent::boot();
+    protected array $handlers = [
+        IamEvent::UserRegistered->value => [RecordSignup::class],
+    ];
 
-        // Scheduled by the module itself, so only a process that runs analytics schedules it.
-        $this->callAfterResolving(Schedule::class, fn (Schedule $schedule) => $schedule->command('analytics:compute')->hourly());
+    protected function schedule(Schedule $schedule): void
+    {
+        $schedule->command('analytics:compute')->hourly();
     }
 }

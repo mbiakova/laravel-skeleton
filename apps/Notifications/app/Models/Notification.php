@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Apps\Notifications\Models;
 
 use Apps\Notifications\Enums\NotificationType;
+use Apps\Notifications\Observers\NotificationObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon $created_at
  * @property-read UserShadow|null $recipient
  */
+#[ObservedBy(NotificationObserver::class)]
 final class Notification extends Model
 {
     protected $table = 'notifications_inbox';

@@ -9,7 +9,6 @@ x-env: &env
   LOG_CHANNEL: stderr
   DB_CONNECTION: pgsql
   DB_HOST: postgres
-  DB_DATABASE: distributable
   DB_USERNAME: distributable
   DB_PASSWORD: distributable
   DB_APP_USERNAME: distributable_app
@@ -19,6 +18,13 @@ x-env: &env
   SESSION_DRIVER: array
   QUEUE_CONNECTION: redis
   AUTH_TOKEN_VALIDATION_STRATEGY: rpc   # jwt needs AUTH_JWT_PUBLIC_KEY / AUTH_JWT_PRIVATE_KEY
+  BROADCAST_CONNECTION: reverb
+  REVERB_APP_ID: distributable
+  REVERB_APP_KEY: distributable-key
+  REVERB_APP_SECRET: distributable-secret
+  REVERB_HOST: localhost
+  REVERB_PORT: "8080"
+  REVERB_SCHEME: http
 
 services:
 
@@ -35,9 +41,12 @@ services:
       RUN_MODULES: "*"
       WITH_CONSUMERS: "iam,analytics,notifications"
       WITH_SCHEDULER: "true"
+      WITH_WORKER: "true"
+      WITH_REVERB: "true"
       SYNC_PERMISSIONS: "true"
     ports:
       - "${APP_PORT:-8000}:8000"
+      - "${REVERB_PUBLIC_PORT:-8080}:8080"
     depends_on:
       postgres:
         condition: service_healthy

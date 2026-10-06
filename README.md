@@ -28,7 +28,7 @@ yours.
 cp .env.example .env
 php artisan key:generate
 php artisan auth:jwt-keys     # the RSA pair iam signs tokens with, in storage/jwt-*.key
-php artisan migrate           # migrates the application's database, then each module's
+php artisan migrate           # migrates each module's database
 php artisan iam:sync-permissions --prune   # the permissions listed in auth.permissions, see Permissions
 php artisan serve
 ```
@@ -84,8 +84,8 @@ curl http://127.0.0.1:8000/notifications/api/v1/notifications \
 
 ```
 config/distributable.php        declares the modules, and where they run when they run elsewhere;
-                                calls and events keep laravel-microservices' defaults, which each
-                                module completes in its own config/microservices.php
+                                calls and events keep laravel-microservices' defaults; each module
+                                declares its handlers in $handlers of its service provider
 apps/
 ├── Iam/              owns the users
 ├── Analytics/        records signups, computes datasets, keeps a copy of the users
@@ -138,7 +138,7 @@ database whichever module calls it.
 | `app/Console/ComputeDatasets.php` | `analytics:compute` rebuilds `analytics_datasets`, one row per hour, from the signups. `AnalyticsServiceProvider` schedules it hourly. |
 | `app/Enums/DatasetMeasure.php`, `MeasureNature.php` | The measures, and how a period folds them: a flow (`signups_count`) adds up, a state (`users_total`) keeps the last value. |
 | `app/Enums/DatasetGroup.php`, `app/Queries/ReadDatasets.php` | `GET /analytics/api/v1/datasets?group=hour\|day\|week\|month\|none&measures[]=…&from=…&to=…` folds the hourly rows onto the group. |
-| `config/microservices.php` | Declares the handler. |
+| `app/Providers/AnalyticsServiceProvider.php` | Declares the handler in `$handlers` and schedules `analytics:compute`. |
 
 A reading never walks the signups: it filters and folds the pre-computed rows, so its cost
 depends on the period, not on the volume.
@@ -161,6 +161,16 @@ A module reads another module's data in two ways, and the skeleton shows both:
 | `app/Http/Controllers/NotificationController.php` | `GET /notifications/api/v1/notifications?filter[unread]=1&sort=-created_at&paginate=20` and `PATCH /notifications/api/v1/notifications/{id}/read`. Both scope on `principalIdOrFail()`: someone else's notification is a 404. |
 | `app/Repositories/NotificationRepository.php` | The example of `EloquentRepository`: it declares the filters and sorts a request may use (any other is a 400), and the controller passes the recipient scope as `$constrain`. |
 | `app/Models/UserShadow.php` | Its copy of iam's users, in `notifications_iam_users`: the authenticated user of its routes. |
+| `app/Observers/NotificationObserver.php` | Once the row is committed: pushes it live, then queues one job per channel its type names. |
+| `app/Events/NotificationPushed.php` | The live push, on `private-user.{id}` (Reverb), in the shape the inbox returns; a client that was offline finds it in the inbox. |
+| `app/Enums/Channel.php`, `app/Jobs/SendMail.php` | The channels beyond the inbox. `SendMail` asks iam for the address (`IamService::mailAddress()`), so the address never sits in a copy. A new channel (SMS, push) is a case and a job. |
+| `routes/api.php` | Also `POST /notifications/api/v1/broadcasting/auth`: Echo joins `private-user.{id}` with the API token; only that user may join (`Foundation\Common\Broadcasting\PrivateUserChannel`). |
+
+```
+iam ─ user.registered ─► consumer ─► SendWelcome ─► notifications_inbox
+                                                      ├─► NotificationPushed ─► Reverb :8080 ─► browser
+                                                      └─► SendMail (queue) ─► worker ─► mail
+```
 
 ### `foundation/Common`
 
@@ -375,9 +385,8 @@ docker compose up -d                              # one container per module: ia
 
 `APP_PORT`, `IAM_PORT`, `ANALYTICS_PORT` and `NOTIFICATIONS_PORT` change the published ports. In the second setup, each
 image is built with `--build-arg RUN_MODULES=<module>`, so it holds only its module: the
-Dockerfile runs `distributable:purge` before `composer dump-autoload`. Each container also gets its own
-application database (`app_iam`, `app_analytics`, `app_notifications`), so two containers never
-migrate the same one. Both compose files validate tokens with the `rpc` strategy: they ship no JWT
+Dockerfile runs `distributable:purge` before `composer dump-autoload`. A container migrates only
+the database of the module it runs, so two containers never migrate the same one. Both compose files validate tokens with the `rpc` strategy: they ship no JWT
 keys. With `jwt`, give every container `AUTH_JWT_PUBLIC_KEY`, and iam `AUTH_JWT_PRIVATE_KEY`.
 
 | File | What it does |
@@ -391,6 +400,7 @@ keys. With `jwt`, give every container `AUTH_JWT_PUBLIC_KEY`, and iam `AUTH_JWT_
 |---|---|---|---|
 | `http` (Octane) | `WITH_HTTP` | `true` | as many as you need |
 | `worker` (`queue:work`) | `WITH_WORKER` | `false` | as many as you need |
+| `reverb` (WebSocket, port 8080) | `WITH_REVERB` | `false` | one per container that pushes: it pushes to its own, on localhost |
 | `publisher` (`microservices:events:publish`) | `WITH_PUBLISHER` | `false` | one per module set: two would publish the outbox out of order |
 | `scheduler` (supercronic) | `WITH_SCHEDULER` | `false` | one per module set: two would run each task twice |
 | `consumer-<module>` | `WITH_CONSUMERS=iam,analytics,notifications` | none | one per module: two would break the order it reads in |

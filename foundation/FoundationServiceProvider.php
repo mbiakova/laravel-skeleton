@@ -8,6 +8,7 @@ use Distributable\Providers\FoundationServiceProvider as BaseServiceProvider;
 use Foundation\Common\Auth\PermissionSource;
 use Foundation\Common\Auth\PrincipalResolver;
 use Foundation\Common\Auth\TokenValidator;
+use Foundation\Common\Broadcasting\PrivateUserChannel;
 use Foundation\Iam\Auth\GatewayTokens;
 use Foundation\Iam\Auth\JwtTokens;
 use Foundation\Iam\Contracts\IamService;
@@ -42,5 +43,12 @@ final class FoundationServiceProvider extends BaseServiceProvider
 
         $this->app->bind(PrincipalResolver::class, fn (Application $app): PrincipalResolver => $app->make((string) config('auth.principal_resolver')));
         $this->app->bind(PermissionSource::class, fn (Application $app): PermissionSource => $app->make((string) config('auth.permission_source')));
+    }
+
+    public function boot(): void
+    {
+        parent::boot();
+
+        PrivateUserChannel::register();
     }
 }
