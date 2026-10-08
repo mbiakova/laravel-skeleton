@@ -17,7 +17,7 @@ abstract class TestCase extends BaseTestCase
     /** @var array{public: string, private: string}|null */
     private static ?array $jwtKeys = null;
 
-    /** Gives each module its own empty sqlite file, shared by its two connections, and migrates everything. */
+    /** Gives each module its own empty sqlite file and migrates everything. */
     protected function setUp(): void
     {
         parent::setUp();
@@ -34,10 +34,8 @@ abstract class TestCase extends BaseTestCase
 
             $this->databases[] = $file = (string) tempnam(sys_get_temp_dir(), "{$module->name}-");
 
-            foreach ([$module->connection(), $module->ownerConnection()] as $connection) {
-                config()->set("database.connections.{$connection}.database", $file);
-                DB::purge($connection);
-            }
+            config()->set("database.connections.{$module->connection()}.database", $file);
+            DB::purge($module->connection());
         }
 
         $this->artisan('migrate')->assertSuccessful();

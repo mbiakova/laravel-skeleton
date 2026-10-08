@@ -106,7 +106,7 @@ foundation/
 | `app/Http/Controllers/UserController.php` | `POST /iam/api/v1/users` and `GET /iam/api/v1/me`. |
 | `app/Http/Controllers/TokenController.php` | `POST /iam/api/v1/tokens` checks the email and password and issues a new token. |
 | `app/Services/IamService.php` | Answers the `IamService` contract with iam's own data. Declared in `IamServiceProvider::$services`, it serves every caller, in this process or another. |
-| `config/database.php` | The `iam` and `iam_owner` connections. |
+| `config/database.php` | The `iam` connection, and the `owner` role that migrates it. |
 | `config/auth.php` | Names `User` as the authenticated user of iam's routes. |
 
 ### The foundation
