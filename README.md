@@ -1,12 +1,12 @@
-# Laravel Distributable skeleton
+# mbiakova Laravel skeleton
 
-A Laravel application set up with
-[laravel-distributable](https://github.com/mk-josias/laravel-distributable). It comes with three example
+The starting point of every mbiakova Laravel project: a Laravel application set up with
+[laravel-distributable](https://github.com/mbiakova/laravel-distributable). It comes with three example
 modules, `iam`, `analytics` and `notifications`, each with its own database. You can read them to see how a module
 is written, then replace them with your own.
 
 ```bash
-composer create-project mk-josias/laravel-distributable-skeleton my-app
+composer create-project mbiakova/laravel-skeleton my-app
 ```
 
 Requires PHP 8.4+, and Redis for the event stream.
