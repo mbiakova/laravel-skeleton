@@ -131,7 +131,7 @@ database whichever module calls it.
 | File | What it does |
 |---|---|
 | `app/Handlers/RecordSignup.php` | Handles `iam.user.registered` and stores a signup. |
-| `app/Models/UserShadow.php` | The copy of iam's users, in the `analytics_iam_users` table. |
+| `app/Models/UserShadow.php` | The copy of iam's users, in the `iam_users` table. |
 | `app/Http/Controllers/SignupController.php` | `GET /analytics/api/v1/signups` lists the signups. `GET /analytics/api/v1/users/{id}` asks `iam` through the contract. |
 | `app/Http/Resources/SignupResource.php` | Adds the user to each signup with `UserResource`, read from the copy: no call to `iam` per row. |
 | `app/Rules/ExistingUser.php` | A `ReferenceRule` that asks `iam` through the contract. `?user_id=` on the signups list uses it. |
@@ -160,7 +160,7 @@ A module reads another module's data in two ways, and the skeleton shows both:
 | `app/Enums/NotificationType.php` | What a notification is about; it renders the title from `lang/en/messages.php` and the recipient's copy. |
 | `app/Http/Controllers/NotificationController.php` | `GET /notifications/api/v1/notifications?filter[unread]=1&sort=-created_at&paginate=20` and `PATCH /notifications/api/v1/notifications/{id}/read`. Both scope on `principalIdOrFail()`: someone else's notification is a 404. |
 | `app/Repositories/NotificationRepository.php` | The example of `EloquentRepository`: it declares the filters and sorts a request may use (any other is a 400), and the controller passes the recipient scope as `$constrain`. |
-| `app/Models/UserShadow.php` | Its copy of iam's users, in `notifications_iam_users`: the authenticated user of its routes. |
+| `app/Models/UserShadow.php` | Its copy of iam's users, in `iam_users`: the authenticated user of its routes. |
 | `app/Observers/NotificationObserver.php` | Once the row is committed: pushes it live, then queues one job per channel its type names. |
 | `app/Events/NotificationPushed.php` | The live push, on `private-user.{id}` (Reverb), in the shape the inbox returns; a client that was offline finds it in the inbox. |
 | `app/Enums/Channel.php`, `app/Jobs/SendMail.php` | The channels beyond the inbox. `SendMail` asks iam for the address (`IamService::mailAddress()`), so the address never sits in a copy. A new channel (SMS, push) is a case and a job. |

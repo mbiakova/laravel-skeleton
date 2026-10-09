@@ -20,7 +20,7 @@ class ModulesTest extends TestCase
             ->assertJsonStructure(['success', 'data' => ['id', 'name', 'token']]);
 
         $this->assertSame(1, DB::connection('iam')->table('iam_users')->count());
-        $this->assertFalse(DB::connection('analytics')->getSchemaBuilder()->hasTable('iam_users'));
+        $this->assertSame(0, DB::connection('analytics')->table('iam_users')->count());
     }
 
     public function test_analytics_records_the_signup_and_keeps_a_copy_of_the_user_once_it_consumes_the_events(): void
