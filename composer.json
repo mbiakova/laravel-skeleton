@@ -2,7 +2,7 @@
     "$schema": "https://getcomposer.org/schema.json",
     "name": "mbiakova/laravel-skeleton",
     "type": "project",
-    "description": "Application skeleton for laravel-distributable: a modular monolith deployable as one process or as per-module services.",
+    "description": "Application skeleton for laravel-distributable-modules: a modular monolith deployable as one process or as per-module services.",
     "keywords": ["laravel", "modular-monolith", "distributable", "skeleton"],
     "license": "MIT",
     "require": {
@@ -12,7 +12,7 @@
         "laravel/octane": "^2.20",
         "laravel/reverb": "^1.12",
         "laravel/tinker": "^3.0",
-        "mbiakova/laravel-distributable": "^0.1",
+        "mbiakova/laravel-distributable-modules": "^0.1",
         "spatie/laravel-data": "^4.0",
         "spatie/laravel-query-builder": "^6.0 || ^7.0",
         "wikimedia/composer-merge-plugin": "^2.1"
@@ -123,7 +123,7 @@
             "options": {
                 "symlink": true,
                 "versions": {
-                    "mbiakova/laravel-distributable": "0.1.0"
+                    "mbiakova/laravel-distributable-modules": "0.1.0"
                 }
             }
         },

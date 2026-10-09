@@ -1,7 +1,7 @@
 # mbiakova Laravel skeleton
 
 The starting point of every mbiakova Laravel project: a Laravel application set up with
-[laravel-distributable](https://github.com/mbiakova/laravel-distributable). It comes with three example
+[laravel-distributable-modules](https://github.com/mbiakova/laravel-distributable-modules). It comes with three example
 modules, `iam`, `analytics` and `notifications`, each with its own database. You can read them to see how a module
 is written, then replace them with your own.
 
@@ -83,7 +83,7 @@ curl http://127.0.0.1:8000/notifications/api/v1/notifications \
 ## What is in the skeleton
 
 ```
-config/distributable.php        declares the modules, and where they run when they run elsewhere;
+config/modules.php              declares the modules, and where they run when they run elsewhere;
                                 calls and events keep laravel-microservices' defaults; each module
                                 declares its handlers in $handlers of its service provider
 apps/
@@ -360,7 +360,7 @@ RUN_MODULES=analytics
 IAM_HOST=http://iam.internal:8000
 ```
 
-`config/distributable.php` declares every module in every process, so `analytics` still listens to
+`config/modules.php` declares every module in every process, so `analytics` still listens to
 iam's events and calls iam over HTTP through `IamRpcService`. Both processes must share `APP_KEY`,
 or the same `MICROSERVICES_RPC_SECRET`.
 
@@ -464,7 +464,7 @@ $user = $this->inModuleOf(User::class, fn () => User::query()->create([...]));
 Laravel's `make:*` commands take `--module`:
 
 ```bash
-php artisan distributable:make-module billing --database          # a new module, declared in config/distributable.php and composer.json
+php artisan distributable:make-module billing --database          # a new module, declared in config/modules.php and composer.json
 php artisan make:model Invoice -mf --module=billing          # apps/Billing/app/Models, its migration and its factory
 php artisan make:controller InvoiceController --module=billing
 ```

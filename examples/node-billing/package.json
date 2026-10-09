@@ -2,7 +2,7 @@
   "name": "node-billing",
   "private": true,
   "type": "module",
-  "description": "A Node service taking part in the modules' events and RPC, as docs/other-languages.md of laravel-distributable describes.",
+  "description": "A Node service taking part in the modules' events and RPC, as docs/other-languages.md of laravel-distributable-modules describes.",
   "scripts": {
     "start": "node index.mjs"
   },

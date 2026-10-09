@@ -14,7 +14,7 @@ return [
     | a module when it runs in another process, or ['url' => …, 'transport' => …].
     */
 
-    'modules' => [
+    'declared' => [
         'iam' => ['host' => env('IAM_HOST')],
         'analytics' => [],
         'notifications' => [],

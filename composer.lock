@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6bd166da9252943a5275329f1a0d5013",
+    "content-hash": "31a791caf13049323d336cdaefc1ee88",
     "packages": [
         {
             "name": "brick/math",
@@ -2596,12 +2596,12 @@
             "time": "2026-03-08T20:05:35+00:00"
         },
         {
-            "name": "mbiakova/laravel-distributable",
+            "name": "mbiakova/laravel-distributable-modules",
             "version": "0.1.0",
             "dist": {
                 "type": "path",
                 "url": "../modular-monolith",
-                "reference": "7d4f56dd8502c027c9560cda5bf3b7bfd75fd69d"
+                "reference": "f9ce842b325cfff213665e366114a10e607cc939"
             },
             "require": {
                 "laravel/framework": "^12.0 || ^13.0",
@@ -2682,7 +2682,7 @@
             "dist": {
                 "type": "path",
                 "url": "../laravel-microservices",
-                "reference": "414db1a2b458f27cd2315ac9f84e3a8fc1fa45d4"
+                "reference": "fb028c9827355fbb90ae91bdf471c1714990b532"
             },
             "require": {
                 "laravel/framework": "^12.0 || ^13.0",

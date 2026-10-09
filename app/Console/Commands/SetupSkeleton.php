@@ -40,7 +40,7 @@ final class SetupSkeleton extends Command
 
     public function handle(): int
     {
-        $present = array_values(array_filter(array_keys(self::REMOVABLE), fn (string $module): bool => array_key_exists($module, (array) config('distributable.modules'))));
+        $present = array_values(array_filter(array_keys(self::REMOVABLE), fn (string $module): bool => array_key_exists($module, (array) config('modules.declared'))));
 
         /** @var list<string> $remove */
         $remove = $this->option('remove') !== [] ? (array) $this->option('remove') : ($present === [] ? [] : array_values(array_diff($present, multiselect(
