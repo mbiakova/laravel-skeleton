@@ -3,13 +3,13 @@
 namespace Tests;
 
 use Distributable\Services\Modules\ModuleRegistry;
-use Distributable\Testing\InteractsWithModules;
+use Distributable\Testing\ModuleAware;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\DB;
 
 abstract class TestCase extends BaseTestCase
 {
-    use InteractsWithModules;
+    use ModuleAware;
 
     /** @var list<string> */
     private array $databases = [];

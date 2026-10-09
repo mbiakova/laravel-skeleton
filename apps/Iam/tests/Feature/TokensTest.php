@@ -68,7 +68,7 @@ class TokensTest extends ModuleTestCase
     public function test_the_gateway_strategy_trusts_only_an_identity_signed_with_the_shared_secret(): void
     {
         config()->set('auth.token_validation.strategy', 'gateway');
-        $id = $this->inModuleOf(User::class, fn (): int => (int) User::query()->value('id'));
+        $id = (int) User::query()->value('id');
 
         $this->getJson('/iam/api/v1/me', ['X-Identity' => GatewayTokens::sign($id, time() + 60, 'testing-gateway-secret')])->assertOk()->assertJsonPath('data.id', $id);
         $this->getJson('/iam/api/v1/me', ['X-Identity' => GatewayTokens::sign($id, time() + 60, 'wrong')])->assertUnauthorized();
@@ -82,7 +82,7 @@ class TokensTest extends ModuleTestCase
 
         $claims = JWT::decode($token, new Key((string) config('auth.token_validation.jwt.public_key'), 'RS256'));
 
-        $this->assertSame((string) $this->inModuleOf(User::class, fn (): int => (int) User::query()->value('id')), $claims->sub);
+        $this->assertSame((string) User::query()->value('id'), $claims->sub);
     }
 
     public function test_identity_turns_a_valid_jwt_into_the_x_identity_the_gateway_strategy_trusts(): void
